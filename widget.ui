@@ -82,6 +82,9 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>刷新進程列表</string>
    </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="submitBtn">
    <property name="geometry">
@@ -94,6 +97,33 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>確定注入</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="procSearchEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>350</y>
+     <width>231</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Adobe 繁黑體 Std B</family>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string>進程搜索</string>
    </property>
   </widget>
  </widget>

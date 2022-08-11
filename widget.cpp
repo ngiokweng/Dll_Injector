@@ -42,7 +42,8 @@ void Widget::on_updateProcBtn_clicked()
     ui->procTable->clear();
     //清空數據
     peInfoArr.clear();
-
+    //開放進程搜索框
+    ui->procSearchEdit->setEnabled(1);
     HANDLE hProcAll = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     PROCESSENTRY32 pe = { 0 };
     pe.dwSize = sizeof(pe);
@@ -52,7 +53,6 @@ void Widget::on_updateProcBtn_clicked()
         PEInfo curPeInfo;
         curPeInfo.pName = QString("%1").arg(wcstok(pe.szExeFile,L"\u0000"));
         curPeInfo.pID = pe.th32ProcessID;
-        curPeInfo.szExeName = pe.szExeFile;
         peInfoArr.emplace_back(curPeInfo);
         qDebug()<<curPeInfo.pName<<' '<<curPeInfo.pID;
 
@@ -72,22 +72,27 @@ void Widget::on_updateProcBtn_clicked()
     ui->procTable->setEditTriggers(QAbstractItemView::NoEditTriggers); //將表格設為"只讀"
 
     for(int i = 0;i<peInfoArr.size();i++){
-        QTableWidgetItem* item = new QTableWidgetItem(QString("進程名：%1  |  進程PID：%2").arg(peInfoArr[i].pName).arg(peInfoArr[i].pID));
+        QTableWidgetItem* item = new QTableWidgetItem(QString("進程名:%1  |  進程PID:%2").arg(peInfoArr[i].pName).arg(peInfoArr[i].pID));
         ui->procTable->setItem(i,0,item);
     }
 
 }
 
-//獲取進制列表選中的索引
+//計算選中item的進程索引
 void Widget::on_procTable_itemClicked(QTableWidgetItem *item)
 {
-    selIndex = ui->procTable->currentIndex().row();
+    string itemStr = item->text().toStdString();
+    int j = 0;
+    selectPid = 0;
+    for(int i = itemStr.length()-1;itemStr[i]!=':';i--){
+        selectPid+=pow(10,j++)*(itemStr[i]-'0');
+    }
 }
 
 
 void Widget::on_submitBtn_clicked()
 {
-    if(ui->showSelDll->toPlainText() == "" || selIndex == -1){
+    if(ui->showSelDll->toPlainText() == "" || selectPid == -1){
         QMessageBox::critical(this,"提示","請選擇【Dll】和【注入進程】後再注入");
         return;
     }
@@ -96,7 +101,7 @@ void Widget::on_submitBtn_clicked()
     std::wstring wStr = ui->showSelDll->toPlainText().toStdWString();
     const wchar_t* DLL_PATH = wStr.c_str();
 
-    DWORD dwPID = peInfoArr[selIndex].pID;
+    DWORD dwPID = selectPid;
     HANDLE hProcess = NULL;
     HANDLE hThread = NULL;
     HMODULE hMod = NULL;
@@ -129,5 +134,28 @@ void Widget::on_submitBtn_clicked()
     CloseHandle(hThread);
     CloseHandle(hProcess);
 
+
+}
+
+void Widget::on_procSearchEdit_textChanged(const QString &arg1)
+{
+
+    newPeInfoArr.clear();
+    for(int i = 0;i<peInfoArr.size();i++){
+        if(peInfoArr[i].pName.startsWith(arg1,Qt::CaseInsensitive)){ //不區分大小寫
+            newPeInfoArr.emplace_back(peInfoArr[i]);
+        }
+    }
+    if(newPeInfoArr.size() == 0)return;
+
+    //清空表格
+    ui->procTable->clear();
+    //設置procTable
+    ui->procTable->setRowCount(newPeInfoArr.size());
+
+    for(int i = 0;i<newPeInfoArr.size();i++){
+        QTableWidgetItem* item = new QTableWidgetItem(QString("進程名:%1  |  進程PID:%2").arg(newPeInfoArr[i].pName).arg(newPeInfoArr[i].pID));
+        ui->procTable->setItem(i,0,item);
+    }
 
 }

@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
@@ -27,6 +28,7 @@ public:
     QTableWidget *procTable;
     QPushButton *updateProcBtn;
     QPushButton *submitBtn;
+    QLineEdit *procSearchEdit;
 
     void setupUi(QWidget *Widget)
     {
@@ -53,9 +55,20 @@ public:
         updateProcBtn = new QPushButton(Widget);
         updateProcBtn->setObjectName(QString::fromUtf8("updateProcBtn"));
         updateProcBtn->setGeometry(QRect(30, 350, 141, 41));
+        updateProcBtn->setAutoDefault(false);
         submitBtn = new QPushButton(Widget);
         submitBtn->setObjectName(QString::fromUtf8("submitBtn"));
         submitBtn->setGeometry(QRect(420, 350, 141, 41));
+        procSearchEdit = new QLineEdit(Widget);
+        procSearchEdit->setObjectName(QString::fromUtf8("procSearchEdit"));
+        procSearchEdit->setEnabled(false);
+        procSearchEdit->setGeometry(QRect(180, 350, 231, 41));
+        QFont font1;
+        font1.setFamily(QString::fromUtf8("Adobe \347\271\201\351\273\221\351\253\224 Std B"));
+        font1.setPointSize(12);
+        font1.setBold(true);
+        font1.setWeight(75);
+        procSearchEdit->setFont(font1);
 
         retranslateUi(Widget);
 
@@ -74,6 +87,8 @@ public:
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt;\"><br /></p></body></html>", nullptr));
         updateProcBtn->setText(QCoreApplication::translate("Widget", "\345\210\267\346\226\260\351\200\262\347\250\213\345\210\227\350\241\250", nullptr));
         submitBtn->setText(QCoreApplication::translate("Widget", "\347\242\272\345\256\232\346\263\250\345\205\245", nullptr));
+        procSearchEdit->setText(QString());
+        procSearchEdit->setPlaceholderText(QCoreApplication::translate("Widget", "\351\200\262\347\250\213\346\220\234\347\264\242", nullptr));
     } // retranslateUi
 
 };

@@ -9,7 +9,10 @@
 #include <algorithm>
 #include <tchar.h>
 #include <iostream>
+#include <math.h>
+#include <string>
 using std::vector;
+using std::string;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -18,7 +21,7 @@ QT_END_NAMESPACE
 struct PEInfo{
     QString pName;
     DWORD pID;
-    wchar_t* szExeName;
+    int index;
 };
 
 class Widget : public QWidget
@@ -38,9 +41,13 @@ private slots:
 
     void on_submitBtn_clicked();
 
+    void on_procSearchEdit_textChanged(const QString &arg1);
+
 private:
     Ui::Widget *ui;
     vector<PEInfo> peInfoArr;
+    vector<PEInfo> newPeInfoArr;
     int selIndex = -1;
+    int selectPid = -1;
 };
 #endif // WIDGET_H
